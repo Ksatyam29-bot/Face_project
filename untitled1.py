@@ -38,7 +38,7 @@ def get_predict(img,model,labels):
     max_pred = prediction.max()
     print(max_pred)
     i = np.where(prediction == max_pred)
-    if max_pred>0.95:
+    if max_pred>0.98:
         return labels[i[0][0]]
     else :
         return None
@@ -56,12 +56,16 @@ while True:
     if faces is not None:
         
         for x,y,w,h in faces:
-            face_img = frame[y:y+h,x:x+w]
+            face_img = frame[y-2:y+(h+2),x-2:x+(w+2)]
             name = get_predict(face_img, model, labels)
             if name is not None:
                 cv2.rectangle(frame,(x,y),(x+w,y+h),
+                              (0,255,0),3)
+                cv2.putText(frame,name,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),3)
+            else:
+                cv2.rectangle(frame,(x,y),(x+w,y+h),
                               (0,0,255),3)
-                cv2.putText(frame,name,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),3)
+                cv2.putText(frame,"unknown",(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,255),3)                
         
     cv2.imshow('video',frame)
     
